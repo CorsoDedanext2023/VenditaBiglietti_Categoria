@@ -2,7 +2,9 @@ package com.example.venditabiglietti_categoria.service.impl;
 import com.example.venditabiglietti_categoria.model.Categoria;
 import com.example.venditabiglietti_categoria.repository.CategoriaRepository;
 import com.example.venditabiglietti_categoria.service.def.CategoriaServiceDef;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,7 +18,7 @@ import java.util.List;
 public class CategoriaServiceImpl implements CategoriaServiceDef {
 
     private final CategoriaRepository categoriaRepository;
-
+//questo non verrà usato
     public Categoria findById(long id){
         return categoriaRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Non esiste una categoria con questo Id"));
     }
@@ -31,6 +33,7 @@ public class CategoriaServiceImpl implements CategoriaServiceDef {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } return listaCategoriePerListaid;
     }
+    @Transactional(rollbackOn = DataAccessException.class)
     @Override
     public void aggiungiCategoria(String nomeCategoria) {
         Categoria c=new Categoria();
@@ -43,14 +46,16 @@ public class CategoriaServiceImpl implements CategoriaServiceDef {
         }
         categoriaRepository.save(c);
     }
+    @Transactional(rollbackOn = DataAccessException.class)
     @Override
     public void rimuoviCategoria(long idCategoria) {
-        Categoria c=categoriaRepository.findById(idCategoria).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Non esiste una categoria con questo Id"));
+        Categoria c=categoriaRepository.findById(idCategoria).orElseThrow(()->new ResponseStatusException(HttpStatus.FORBIDDEN,"Non esiste una categoria con questo Id"));
         c.setCancellato(true);
     }
+    @Transactional(rollbackOn = DataAccessException.class)
     @Override
     public void modificaCategoria(long idCategoria, String nomeCategoria) {
-        Categoria c=categoriaRepository.findById(idCategoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Non esiste una categoria con questo Id"));
+        Categoria c=categoriaRepository.findById(idCategoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN,"Non esiste una categoria con questo Id"));
         c.setNome(nomeCategoria);
         categoriaRepository.save(c);
     }
