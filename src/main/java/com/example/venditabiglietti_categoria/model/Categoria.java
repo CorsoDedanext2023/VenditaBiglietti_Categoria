@@ -14,5 +14,7 @@ public class Categoria {
     private String nome;
     @Column(nullable = false)
     private boolean isCancellato;
+    @Version
+    private long version;
 
 }
