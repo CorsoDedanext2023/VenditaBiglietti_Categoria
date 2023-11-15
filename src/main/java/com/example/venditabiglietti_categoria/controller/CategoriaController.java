@@ -39,7 +39,7 @@ public class CategoriaController {
 @ApiResponses(value = {
         @ApiResponse(description = "Categoria aggiunta con successo",responseCode = "201 Created",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = String.class))),
         @ApiResponse(description = "Richiesta non valida,errore nelle validation",responseCode = "400 Bad_Request",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = MethodArgumentNotValidException.class ))),
-        @ApiResponse(description = "Si inserisce una categoria già esistente",responseCode = "404 Not_Found",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = Exception.class)))
+        @ApiResponse(description = "Si inserisce una categoria già esistente",responseCode = "406 Not Acceptable.",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = ResponseStatusException.class)))
 })
     @PostMapping("/aggiungicategoria")
     public ResponseEntity<String> aggiungiCategoria(@Valid
