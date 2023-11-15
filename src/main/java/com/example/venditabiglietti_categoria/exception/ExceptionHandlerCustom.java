@@ -2,6 +2,7 @@ package com.example.venditabiglietti_categoria.exception;
 
 import com.example.venditabiglietti_categoria.dto.response.ErrorMessageDTOResponse;
 import com.example.venditabiglietti_categoria.dto.response.ErrorMessageListDTOResponse;
+import com.example.venditabiglietti_categoria.dto.response.ResponseStatuExceptionCustomMessageDTOResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class ExceptionHandlerCustom {
@@ -45,6 +47,16 @@ public class ExceptionHandlerCustom {
             messaggioErrore.setInvalid_Data(violation.getInvalidValue().toString());
             error.getViolations().add(messaggioErrore);
         }
+        return error;
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    @ResponseBody
+    ResponseStatuExceptionCustomMessageDTOResponse onResponseStatusException(ResponseStatusException e)
+    { ResponseStatuExceptionCustomMessageDTOResponse error = new ResponseStatuExceptionCustomMessageDTOResponse();
+        error.setCode(e.getStatusCode());
+        error.setReason(e.getReason());
+        error.setStatusCodeNumber(e.getStatusCode().value());
         return error;
     }
 }
