@@ -1,6 +1,8 @@
 package com.example.venditabiglietti_categoria.service.impl;
+import com.example.venditabiglietti_categoria.dto.request.FiltroCategoriaDTORequest;
 import com.example.venditabiglietti_categoria.model.Categoria;
 import com.example.venditabiglietti_categoria.repository.CategoriaRepository;
+import com.example.venditabiglietti_categoria.repository.CriteriaCategoriaRepository;
 import com.example.venditabiglietti_categoria.service.def.CategoriaServiceDef;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.List;
 public class CategoriaServiceImpl implements CategoriaServiceDef {
 
     private final CategoriaRepository categoriaRepository;
+    private final CriteriaCategoriaRepository criteriaCategoriaRepository;
 //questo non verrà usato
     public Categoria findById(long id){
         return categoriaRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Non esiste una categoria con questo Id"));
@@ -33,6 +36,7 @@ public class CategoriaServiceImpl implements CategoriaServiceDef {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } return listaCategoriePerListaid;
     }
+
     @Transactional(rollbackOn = DataAccessException.class)
     @Override
     public void aggiungiCategoria(String nomeCategoria) {
@@ -74,5 +78,10 @@ public class CategoriaServiceImpl implements CategoriaServiceDef {
         }  if(categorieTrovate.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } return categorieTrovate;
+    }
+
+    @Override
+    public List<Categoria> filtraCategorie(FiltroCategoriaDTORequest request) {
+        return criteriaCategoriaRepository.filtraCategorie(request);
     }
 }

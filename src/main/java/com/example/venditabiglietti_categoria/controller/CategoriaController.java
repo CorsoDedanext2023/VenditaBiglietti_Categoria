@@ -1,6 +1,7 @@
 package com.example.venditabiglietti_categoria.controller;
 
 import com.example.venditabiglietti_categoria.dto.request.CategoriaDto;
+import com.example.venditabiglietti_categoria.dto.request.FiltroCategoriaDTORequest;
 import com.example.venditabiglietti_categoria.dto.response.ErrorMessageDTOResponse;
 import com.example.venditabiglietti_categoria.model.Categoria;
 import com.example.venditabiglietti_categoria.service.impl.CategoriaServiceImpl;
@@ -126,8 +127,9 @@ public class CategoriaController {
         return ResponseEntity.status(HttpStatus.OK).body(categoriaService.findAllByNomeList(nomiCategorie));
     }
 
-
-
-
+    @GetMapping("/filtraCategorie")
+    public ResponseEntity<List<Categoria>> filtraCategorie(@RequestBody FiltroCategoriaDTORequest request){
+        return ResponseEntity.ok().body(categoriaService.filtraCategorie(request));
+    }
 
 }
