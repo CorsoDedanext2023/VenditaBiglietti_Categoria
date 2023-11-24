@@ -1,5 +1,6 @@
 package com.example.venditabiglietti_categoria.service.def;
 
+import com.example.venditabiglietti_categoria.dto.request.FiltroCategoriaDTORequest;
 import com.example.venditabiglietti_categoria.model.Categoria;
 import java.util.List;
 
@@ -14,5 +15,6 @@ public interface CategoriaServiceDef {
     public Categoria findByIdAndCancellatoFalse(long id);
 
     public List<Categoria> findAllByIds(List<Long> ids);
+    public List<Categoria> filtraCategorie(FiltroCategoriaDTORequest request);
 
 }
