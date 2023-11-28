@@ -127,7 +127,7 @@ public class CategoriaController {
         return ResponseEntity.status(HttpStatus.OK).body(categoriaService.findAllByNomeList(nomiCategorie));
     }
 
-    @GetMapping("/filtraCategorie")
+    @PostMapping("/filtraCategorie")
     public ResponseEntity<List<Categoria>> filtraCategorie(@RequestBody FiltroCategoriaDTORequest request){
         return ResponseEntity.ok().body(categoriaService.filtraCategorie(request));
     }
