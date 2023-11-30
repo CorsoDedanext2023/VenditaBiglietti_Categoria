@@ -82,6 +82,6 @@ public class CategoriaServiceImpl implements CategoriaServiceDef {
 
     @Override
     public List<Categoria> filtraCategorie(FiltroCategoriaDTORequest request) {
-        return criteriaCategoriaRepository.filtraCategorie(request).stream().filter(c -> !c.isCancellato()).toList();
+        return criteriaCategoriaRepository.filtraCategorie(request);
     }
 }
