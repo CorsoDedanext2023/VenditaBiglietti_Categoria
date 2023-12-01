@@ -44,17 +44,24 @@ public class CategoriaServiceImpl implements CategoriaServiceDef {
         c.setNome(nomeCategoria);
         c.setCancellato(false);
         for(Categoria categoria:categoriaRepository.findAll()){
-            if(categoria.getNome().equals(nomeCategoria)){
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Non è possibile aggiungere questa categoria poichè già presente.");
-            }
+           if(categoria.getNome().equals(nomeCategoria)){
+               if(categoria.isCancellato()){
+                   categoria.setCancellato(false);
+                   categoriaRepository.save(categoria);
+               } else {
+                   throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Non è possibile aggiungere questa categoria poiché già presente.");
+               }
+           } else {
+               categoriaRepository.save(c);
+           }
         }
-        categoriaRepository.save(c);
     }
     @Transactional(rollbackOn = DataAccessException.class)
     @Override
     public void rimuoviCategoria(long idCategoria) {
         Categoria c=categoriaRepository.findById(idCategoria).orElseThrow(()->new ResponseStatusException(HttpStatus.FORBIDDEN,"Non esiste una categoria con questo Id"));
         c.setCancellato(true);
+        categoriaRepository.save(c);
     }
     @Transactional(rollbackOn = DataAccessException.class)
     @Override
@@ -68,7 +75,6 @@ public class CategoriaServiceImpl implements CategoriaServiceDef {
         return categoriaRepository.findByNomeAndIsCancellatoFalse(nomeCategoria).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Non esiste una categoria con questo nome"));
     }
 
-    //FIXME bisogna fare come la ricerca per ids,di modo che se uno inserisce un nome sbagliato non si blocchi ma restituisca comunque tutti gli altri
     @Override
     public List<Categoria> findAllByNomeList(List<String> nomiCategorie) {
         List<Categoria> categorieTrovate=new ArrayList<>();
