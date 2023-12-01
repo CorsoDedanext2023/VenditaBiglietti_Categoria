@@ -13,7 +13,6 @@ public interface CategoriaServiceDef {
     public List<Categoria> findAllByNomeList(List<String> nomiCategorie);
     public Categoria findById(long id);
     public Categoria findByIdAndCancellatoFalse(long id);
-
     public List<Categoria> findAllByIds(List<Long> ids);
     public List<Categoria> filtraCategorie(FiltroCategoriaDTORequest request);
 

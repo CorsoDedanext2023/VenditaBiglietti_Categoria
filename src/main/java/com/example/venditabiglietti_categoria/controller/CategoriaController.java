@@ -2,7 +2,6 @@ package com.example.venditabiglietti_categoria.controller;
 
 import com.example.venditabiglietti_categoria.dto.request.CategoriaDto;
 import com.example.venditabiglietti_categoria.dto.request.FiltroCategoriaDTORequest;
-import com.example.venditabiglietti_categoria.dto.response.ErrorMessageDTOResponse;
 import com.example.venditabiglietti_categoria.model.Categoria;
 import com.example.venditabiglietti_categoria.service.impl.CategoriaServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +23,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.print.attribute.standard.Media;
+import java.nio.file.InvalidPathException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -115,18 +115,19 @@ public class CategoriaController {
     @Operation(summary = "Trova una lista di categorie in base ad una lista di nomi.",description = "Metodo per il find di una categoria inserendo una lista di nomi come requestBody")
     @ApiResponses(value = {
             @ApiResponse(description = "Lista di Categorie Recuperata.",responseCode = "200 OK.",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = Categoria.class))),
-            @ApiResponse(description = "Richiesta non valida, errore nelle validation(id errato)",responseCode = "400 Bad_Request",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = ConstraintViolationException.class))),
-            @ApiResponse(description = "Uno o piu id nella lista sono errati",responseCode = "400 BAD_REQUEST.",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = ResponseStatusException.class))),
+            @ApiResponse(description = "Uno o piu nomi nella lista sono errati",responseCode = "400 BAD_REQUEST.",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = ResponseStatusException.class))),
             @ApiResponse(description = "Body non presente",responseCode = "400 BAD_REQUEST.",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = ResponseStatusException.class)))
     })
     @PostMapping("/trovaTuttiPerListaNomi")
-    public  ResponseEntity<List<Categoria>> trovaTuttiPerListaNomi(
-                                                                    @Valid
-                                                                    @Positive(message = "l'id deve essere maggiore di 0.")
-                                                                    @RequestBody List<String> nomiCategorie){
+    public  ResponseEntity<List<Categoria>> trovaTuttiPerListaNomi(@Valid @RequestBody List<String> nomiCategorie){
         return ResponseEntity.status(HttpStatus.OK).body(categoriaService.findAllByNomeList(nomiCategorie));
     }
-
+@Operation(summary = "Criteria query per la categoria",description = "Ci permette tramite un body di un DTO di categoria di utilizzare la ricerca dinamica")
+@ApiResponses(value = {
+        @ApiResponse(description = "Ritorna tutte le categorie con la stessa stringa inserita nel DTO",responseCode = "200 OK.",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = Categoria.class))),
+        @ApiResponse(description = "Non trova nessun elemento associato alla request",responseCode = "200 OK.",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = ArrayList.class))),
+        @ApiResponse(description = "path errato",responseCode = "400 BAD_REQUEST",content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = InvalidPathException.class)))
+})
     @PostMapping("/filtraCategorie")
     public ResponseEntity<List<Categoria>> filtraCategorie(@RequestBody FiltroCategoriaDTORequest request){
         return ResponseEntity.ok().body(categoriaService.filtraCategorie(request));
